@@ -33,6 +33,8 @@ public:
 	Stanice(int x, int y, const char* name);	
 	Point Poloha;
 	Point Auto;
+	double AutoStartTime;
+	double AutoArrivalTime;
 	int Vzdalenost;	
 };
 
@@ -43,9 +45,11 @@ public:
 	double ExtinguishTime;
 	double EndTime;
 	int Skoda;
+	std::vector<Stanice*> Auta;
 	Point Poloha;
 	Pozar(int intenzita);	
 	void Behavior();
+	int VypocetSkod(int burnTime, int pocatecniIntenzita);
 };
 
 class Generator : public Event {
