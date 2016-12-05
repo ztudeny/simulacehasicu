@@ -26,7 +26,16 @@ void GenerovatStanice() {
 	stanice.push_back(new Stanice(45000, 39375, "Slavičín"));
 	stanice.push_back(new Stanice(56250, 39375, "Valašské Klobouky"));
 	stanice.push_back(new Stanice(67500, 33750, "Vsetín"));
+	//stanice.push_back(new Stanice(56250, 22500, "Slušovice"));
+	//stanice.push_back(new Stanice(56250, 28125, "Vizovice"));
 	//stanice.push_back(new Stanice(78750, 22500, "Rožnov pod Radhoštěm"));
+
+	
+	// Nahodne rozmisteni 13 stanic
+	/*for (int i = 0; i < 13; i++)
+	{
+		stanice.push_back(new Stanice(Uniform(0, X_MAX), (Uniform(0, Y_MAX)), "Stanice " + i));
+	}*/
 }
 
 void DeleteStanice()
@@ -45,15 +54,15 @@ void UvolneniAuta() {
 	OrderQueue();
 	// konec haseni, primarne vytahnout pozar s intenzitou 3
 	if (Q3.Length()>0) {
-		std::cout << "Q3 length " << Q3.Length() << "\n";
+		//std::cout << "Q3 length " << Q3.Length() << "\n";
 		(Q3.GetFirst())->Activate();
 	}		
 	else if (Q2.Length()>0) {
-		std::cout << "Q2 length " << Q3.Length() << "\n";
+		//std::cout << "Q2 length " << Q3.Length() << "\n";
 		(Q2.GetFirst())->Activate();
 	}		
 	else if (Q1.Length()>0) {
-		std::cout << "Q1 length " << Q3.Length() << "\n";
+		//std::cout << "Q1 length " << Q3.Length() << "\n";
 		(Q1.GetFirst())->Activate();
 	}		
 }
@@ -123,7 +132,7 @@ Point GenerovatOhen()
 			pozice.X = Uniform(0,16875);
 			pozice.Y = Uniform(16875,28125);
 			break;
-		//Zlin - 15,2 %
+		//Zlin - 15,1 %
 		default:
 			pozice.X = Uniform(37500,50625);
 			pozice.Y = Uniform(16875,28125);
@@ -170,7 +179,7 @@ bool QueuePozar::IntensityOverflow() {
 	if (temp == NULL)
 		return false;
 	if (round(temp->StartTime) == round(Time)) {
-		std::cout << "Tento fajr je jiz vyresen.\n";
+		//std::cout << "Tento fajr je jiz vyresen.\n";
 		return false;
 	}
 
@@ -180,7 +189,7 @@ bool QueuePozar::IntensityOverflow() {
 	double intenzita = temp->Intenzita;
 	// 1 bod intenzity == 1 minuta
 	//temp->Intenzita += burnTime;
-	std::cout << "cekal pozar ve fronte, zacal v case " << temp->StartTime << ", ted je " << Time << ", puvodni intenzita " << intenzita << ", aktualni intenzita " << temp->Intenzita << ", burnTime " << burnTime << std::endl;
+	//std::cout << "cekal pozar ve fronte, zacal v case " << temp->StartTime << ", ted je " << Time << ", puvodni intenzita " << intenzita << ", aktualni intenzita " << temp->Intenzita << ", burnTime " << burnTime << std::endl;
 	temp->Skoda += temp->VypocetSkod(burnTime, intenzita);
 	// Vypocitana dosavadni skoda, je tedy treba nastavit aktualni cas pro pripadny dalsi vypocet
 	//temp->StartTime = Time;
@@ -208,24 +217,24 @@ int Pozar::VypocetSkod(double burnTime, double pocatecniIntenzita) {
 		int autoCount = 0;
 		// Usek, pro ktery se pocitaji skody. Pokud je to usek, ve kterem se potencialne prehoupne intenzita do vyssi kategorie, usek se zkrati presne na hranici prechodu do vyssi kategorie.
 		double temp = ((burnTime) >= 100 || fmod(pocatecniIntenzita + (burnTime), 100) <= fmod(pocatecniIntenzita,100)) ? (100 - (fmod(pocatecniIntenzita, 100)))/intenzitaGrow : (burnTime);
-		std::cout << "----------------------------------------------------\n";
+		//std::cout << "----------------------------------------------------\n";
 		//std::cout << "temp == " "if " << burnTime << " >= 100 || " << fmod(pocatecniIntenzita + (burnTime), 100) << " <= " << fmod(pocatecniIntenzita,100) << " then temp = " << (100 - fmod(pocatecniIntenzita, 100))/intenzitaGrow << " else " << burnTime << std::endl;
-		std::cout << "aktualni cas: " << Time << " StartTime: " << StartTime << " usek: " << temp << " pocatecniIntenzita: " << pocatecniIntenzita << " burnTime " << burnTime << "\n";
+		//std::cout << "aktualni cas: " << Time << " StartTime: " << StartTime << " usek: " << temp << " pocatecniIntenzita: " << pocatecniIntenzita << " burnTime " << burnTime << "\n";
 
 		for (int i = 0; i < Auta.size(); i++) {
-			std::cout << "auto ktere prijelo/jede - AutoStartTime: " << Auta[i]->AutoStartTime << " AutoArrivalTime: " << Auta[i]->AutoArrivalTime << "\n";
+			//std::cout << "auto ktere prijelo/jede - AutoStartTime: " << Auta[i]->AutoStartTime << " AutoArrivalTime: " << Auta[i]->AutoArrivalTime << "\n";
 
 			// Pokud je cas prijezdu auta vetsi, nez pocatecni cas pozaru, zasahuje do vypoctu. Pokud je mensi nebo roven, auto uz pro pocitany usek dorazilo
 			if (round(Auta[i]->AutoStartTime + Auta[i]->AutoArrivalTime) > round(StartTime)) {				
 				// Pokud auto dorazi v prubehu pocitaneho useku, je tento usek treba zkratit na cas prijezdu auta, aby se mohly vypocitat skody pro usek, kdy auto jeste nedorazilo
 				if (round(Auta[i]->AutoStartTime + Auta[i]->AutoArrivalTime) < round(StartTime + temp)) {
-					std::cout << "je treba snizit usek na " << (Auta[i]->AutoStartTime + Auta[i]->AutoArrivalTime) - StartTime << std::endl;
+					//std::cout << "je treba snizit usek na " << (Auta[i]->AutoStartTime + Auta[i]->AutoArrivalTime) - StartTime << std::endl;
 					temp = (Auta[i]->AutoStartTime + Auta[i]->AutoArrivalTime) - StartTime;
 				}
 			}
 			else {
 				autoCount++;
-				std::cout << "v tomto useku je pritomnych " << autoCount << " aut\n";
+				//std::cout << "v tomto useku je pritomnych " << autoCount << " aut\n";
 			}			
 		}
 		// Nastavuje rust intenzity a skod podle poctu chybejicich hasicskych aut v pozaru
@@ -249,17 +258,17 @@ int Pozar::VypocetSkod(double burnTime, double pocatecniIntenzita) {
 				break;
 		}
 		Intenzita += temp * intenzitaGrow;
-		std::cout << "pritomna auta vyresena, usek je " << temp << ", intenzita vzrostla na " << Intenzita <<"\n";
+		//std::cout << "pritomna auta vyresena, usek je " << temp << ", intenzita vzrostla na " << Intenzita <<"\n";
 		// Prumer intenzity, se kterou pocitany usek horel
 		double average = (pocatecniIntenzita + (Intenzita))/2;
-		std::cout << "skoda = prumer intenzit v danem useku " << average << " * koefi " << koefi << " * usek " << temp << std::endl;
-		skoda += pow((average/10),average/100)*koefi*temp;
+		//std::cout << "skoda = prumer intenzit v danem useku " << average << " * koefi " << koefi << " * usek " << temp << std::endl;
+		skoda += pow(average/100,(average/100))*100*koefi*temp;
 		// Posun pocatecni intenzity o vypocteny usek - chceme pocitat dalsi usek
 		pocatecniIntenzita += intenzitaGrow * temp;
 		// Posun casu pozaru o vypocteny usek - aktualni je jiz vypocteny, StartTime se tedy posune na dalsi nevypocitany usek
 		StartTime += temp;
 		burnTime -= temp;
-		std::cout << "novy BurnTime " << burnTime << std::endl;
+		//std::cout << "novy BurnTime " << burnTime << std::endl;
 	// Cyklus pokracuje, pokud jeste nejsou vypocteny skody od zacatku pozaru (resp. posledniho vypocitaneho useku) az po aktualni stav pozaru
 	} while (burnTime > 0);
 	return skoda;	
@@ -272,7 +281,7 @@ Pozar::Pozar(int intenzita) : Process(intenzita) {
 }
 
 void Pozar::Behavior() {
-	std::cout << "NOVY POZAR, INTENZITA " << Intenzita << std::endl; 
+	//std::cout << "NOVY POZAR, INTENZITA " << Intenzita << std::endl; 
 	StartTime = Time;
 	double waitTime = 0;
 	Poloha = GenerovatOhen();
@@ -299,7 +308,7 @@ void Pozar::Behavior() {
 				break;
 		}
 		Passivate();
-		std::cout << "Proces aktivovan - Intenzita " << Intenzita << ", cas " << Time << std::endl;
+		//std::cout << "Proces aktivovan - Intenzita " << Intenzita << ", cas " << Time << std::endl;
 		goto zpet;
 	}		
 	Seize(*current);
@@ -308,24 +317,26 @@ void Pozar::Behavior() {
 	// auto prijede za tolik minut (vzdalenost / rychlost v metrech za minutu) plus vyrazi 1 - 2 minuty od vyvolaneho poplachu
 	current->AutoArrivalTime = Vzdalenost(Poloha, current->Poloha)/AVERAGE_CAR_SPEED + FIREMEN_GET_READY;
 	Auta.push_back(current);
-	std::cout << "Intenzita " << Intenzita << " sila aut " << Auta.size()*100 << "\n";
+	//std::cout << "Intenzita " << Intenzita << " sila aut " << Auta.size()*100 << "\n";
 	if (Intenzita - (Auta.size()*100) >= 100)
 		goto zpet;
 	waitTime = (current->AutoArrivalTime + current->AutoStartTime) - Time;
 	if (current->AutoArrivalTime + current->AutoStartTime > Time)
 	{
-		std::cout << "Cekani na posledni prijizdejici auto...\n";
+		//std::cout << "Cekani na posledni prijizdejici auto...\n";
 		Wait(waitTime);
-	}
+	}	
 	Skoda += VypocetSkod(waitTime, Intenzita);
-	std::cout << "HORI... SKODA " << Skoda << std::endl;
+	//std::cout << "HORI... SKODA " << Skoda << std::endl;
 	// TODO ZDENEK CAS
-	int j = Intenzita/100;
-	Wait(Exponential(Intenzita*j));
-	Skoda += pow((Intenzita/2)/10,(Intenzita/2)/100);
-	skody(Skoda);
+	waitTime = 8.7715*exp(0.0122962*Intenzita);
+	Wait(waitTime);
+	double intenzitaPrumer = Intenzita/2;
+	Skoda += pow(intenzitaPrumer/100,(intenzitaPrumer/100))*100*waitTime;
+	skody(Exponential(Skoda));
 	histintenzita(Intenzita);
-	std::cout << "UHASENO... SKODA " << Skoda << std::endl;
+	CelkoveSkody += Skoda;
+	//std::cout << "UHASENO... SKODA " << Skoda << std::endl;
 	std::sort(Auta.begin(), Auta.end(), 
 		[](Stanice *a, Stanice *b)
 		{ 
@@ -354,22 +365,22 @@ void Generator::Behavior() {
 	/*(new Pozar(300 + Random()*50))->Activate();	
 	(new Pozar(300 + Random()*50))->Activate();	
 	(new Pozar(100 + Random()*50))->Activate();*/
-	//TODO - vypocet intenzity, dosazeni spravnych hodnot pravdepodobnostniho rozlozeni
 	if (k < 0.083)
-		(new Pozar(300 + Random()*50))->Activate();		
+		(new Pozar(300 + Random()*90))->Activate();		
 	else if (k < 0.363)		
-		(new Pozar(200 + Random()*50))->Activate();
+		(new Pozar(200 + Random()*90))->Activate();
 	else
-		(new Pozar(100 + Random()*50))->Activate();
+		(new Pozar(100 + Random()*90))->Activate();
 	Activate(Time+Exponential(MINUTES_TO_FIRE));
 }
 
 int	main()
 {
+	CelkoveSkody = 0;
 	GenerovatStanice();
 	SetOutput("pozar.dat");
 	// 1 rok v minutach 525600
-	Init(0, 525600);
+	Init(0, 525600*SIMULATE_YEARS);
 	RandomSeed(time(NULL));
 	(new Generator())->Activate();
 	Run();
@@ -379,6 +390,8 @@ int	main()
 	Q2.Output();
 	Q3.Output();
 	skody.Output();
-	histintenzita.Output();
+	histintenzita.Output();	
+	std::cout << "Naklady na stanice za dobu simulace: " << (double)(stanice.size()*8753600*SIMULATE_YEARS) << " korun.\n";
+	std::cout << "Celkove skody: " << CelkoveSkody << " korun." << std::endl;
 	DeleteStanice();
 }

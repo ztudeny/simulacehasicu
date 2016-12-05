@@ -13,6 +13,7 @@
 #define FIREMEN_GET_READY 2 // 2 minuty, nez hasici vyrazi
 #define X_MAX 90000
 #define Y_MAX 45000
+#define SIMULATE_YEARS 1
 
 typedef struct Point {
 	int X;
@@ -64,5 +65,7 @@ std::vector<Stanice*> stanice;
 QueuePozar Q1;
 QueuePozar Q2;
 QueuePozar Q3;
+double CelkoveSkody;
+double NakladyStanice;
 
 #endif // _HASICI_H
