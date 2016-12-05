@@ -9,8 +9,10 @@
 
 #define MINUTES_TO_FIRE 733
 #define POCET_STANIC 5
-#define X_MAX 63000
-#define Y_MAX 63000
+#define AVERAGE_CAR_SPEED 750 // 45 km/h == 750 m/min
+#define FIREMEN_GET_READY 2 // 2 minuty, nez hasici vyrazi
+#define X_MAX 90000
+#define Y_MAX 45000
 
 typedef struct Point {
 	int X;
@@ -40,7 +42,7 @@ public:
 
 class Pozar : public Process {
 public:
-	int Intenzita;
+	double Intenzita;
 	double StartTime;
 	double ExtinguishTime;
 	double EndTime;
@@ -49,7 +51,7 @@ public:
 	Point Poloha;
 	Pozar(int intenzita);	
 	void Behavior();
-	int VypocetSkod(int burnTime, int pocatecniIntenzita);
+	int VypocetSkod(double burnTime, double pocatecniIntenzita);
 };
 
 class Generator : public Event {
