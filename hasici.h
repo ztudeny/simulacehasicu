@@ -13,7 +13,7 @@
 #define FIREMEN_GET_READY 2 // 2 minuty, nez hasici vyrazi
 #define X_MAX 90000
 #define Y_MAX 45000
-#define SIMULATE_YEARS 1
+#define SIMULATE_YEARS 10
 
 typedef struct Point {
 	int X;

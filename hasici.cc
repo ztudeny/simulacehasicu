@@ -13,29 +13,30 @@ Histogram histintenzita("Intenzita", 0, 10, 80);
 
 
 void GenerovatStanice() {
-	stanice.push_back(new Stanice(11250, 5625, "Morkovice-Slížany"));
-	stanice.push_back(new Stanice(11250, 22500, "Uherské Hradiště"));
-	stanice.push_back(new Stanice(11250, 33750, "Uherský Brod"));
-	stanice.push_back(new Stanice(22500, 16875, "Otrokovice"));	
-	stanice.push_back(new Stanice(33750, 5625, "Kroměříž"));
-	stanice.push_back(new Stanice(45000, 11250, "Holešov"));
-	stanice.push_back(new Stanice(56250, 3375, "Bystřice pod Hostýnem"));
-	stanice.push_back(new Stanice(73125, 11250, "Valašské Meziříčí"));
-	stanice.push_back(new Stanice(39375, 22500, "Zlín"));
-	stanice.push_back(new Stanice(33750, 33750, "Luhačovice"));
-	stanice.push_back(new Stanice(45000, 39375, "Slavičín"));
-	stanice.push_back(new Stanice(56250, 39375, "Valašské Klobouky"));
-	stanice.push_back(new Stanice(67500, 33750, "Vsetín"));
+	// stanice.push_back(new Stanice(11250, 5625, "Morkovice-Slížany"));
+	// stanice.push_back(new Stanice(11250, 22500, "Uherské Hradiště"));
+	// stanice.push_back(new Stanice(11250, 33750, "Uherský Brod"));
+	// stanice.push_back(new Stanice(22500, 16875, "Otrokovice"));	
+	// stanice.push_back(new Stanice(33750, 5625, "Kroměříž"));
+	// stanice.push_back(new Stanice(45000, 11250, "Holešov"));
+	// stanice.push_back(new Stanice(56250, 3375, "Bystřice pod Hostýnem"));
+	// stanice.push_back(new Stanice(73125, 11250, "Valašské Meziříčí"));
+	// stanice.push_back(new Stanice(39375, 22500, "Zlín"));
+	// stanice.push_back(new Stanice(39376, 22501, "Zlín2"));
+	// stanice.push_back(new Stanice(33750, 33750, "Luhačovice"));
+	// stanice.push_back(new Stanice(45000, 39375, "Slavičín"));
+	// stanice.push_back(new Stanice(56250, 39375, "Valašské Klobouky"));
+	// stanice.push_back(new Stanice(67500, 33750, "Vsetín"));
 	//stanice.push_back(new Stanice(56250, 22500, "Slušovice"));
-	//stanice.push_back(new Stanice(56250, 28125, "Vizovice"));
+	// stanice.push_back(new Stanice(56250, 28125, "Vizovice"));
 	//stanice.push_back(new Stanice(78750, 22500, "Rožnov pod Radhoštěm"));
 
 	
-	// Nahodne rozmisteni 13 stanic
-	/*for (int i = 0; i < 13; i++)
+	// Nahodne rozmisteni 13 stanic ** Vypadá to, že 14 stanic bude nej **
+	for (int i = 0; i < 14; i++)
 	{
 		stanice.push_back(new Stanice(Uniform(0, X_MAX), (Uniform(0, Y_MAX)), "Stanice " + i));
-	}*/
+	}
 }
 
 void DeleteStanice()
@@ -190,7 +191,7 @@ bool QueuePozar::IntensityOverflow() {
 	// 1 bod intenzity == 1 minuta
 	//temp->Intenzita += burnTime;
 	//std::cout << "cekal pozar ve fronte, zacal v case " << temp->StartTime << ", ted je " << Time << ", puvodni intenzita " << intenzita << ", aktualni intenzita " << temp->Intenzita << ", burnTime " << burnTime << std::endl;
-	temp->Skoda += temp->VypocetSkod(burnTime, intenzita);
+	temp->Skoda += Exponential(temp->VypocetSkod(burnTime, intenzita));
 	// Vypocitana dosavadni skoda, je tedy treba nastavit aktualni cas pro pripadny dalsi vypocet
 	//temp->StartTime = Time;
 	// Pokud byl cas horeni nad 100 minut (nebo se intenzita prehoupla do dalsi stovky), z pozaru se stane o stupen horsi pozar
@@ -262,7 +263,7 @@ int Pozar::VypocetSkod(double burnTime, double pocatecniIntenzita) {
 		// Prumer intenzity, se kterou pocitany usek horel
 		double average = (pocatecniIntenzita + (Intenzita))/2;
 		//std::cout << "skoda = prumer intenzit v danem useku " << average << " * koefi " << koefi << " * usek " << temp << std::endl;
-		skoda += pow(average/100,(average/100))*100*koefi*temp;
+		skoda += Exponential(pow(average/88.5,(average/100))*100*koefi*temp);
 		// Posun pocatecni intenzity o vypocteny usek - chceme pocitat dalsi usek
 		pocatecniIntenzita += intenzitaGrow * temp;
 		// Posun casu pozaru o vypocteny usek - aktualni je jiz vypocteny, StartTime se tedy posune na dalsi nevypocitany usek
@@ -326,13 +327,13 @@ void Pozar::Behavior() {
 		//std::cout << "Cekani na posledni prijizdejici auto...\n";
 		Wait(waitTime);
 	}	
-	Skoda += VypocetSkod(waitTime, Intenzita);
+	Skoda += Exponential(VypocetSkod(waitTime, Intenzita));
 	//std::cout << "HORI... SKODA " << Skoda << std::endl;
 	// TODO ZDENEK CAS
 	waitTime = 8.7715*exp(0.0122962*Intenzita);
 	Wait(waitTime);
 	double intenzitaPrumer = Intenzita/2;
-	Skoda += pow(intenzitaPrumer/100,(intenzitaPrumer/100))*100*waitTime;
+	Skoda += Exponential(pow(intenzitaPrumer/88.5,(intenzitaPrumer/100))*100*waitTime);
 	skody(Exponential(Skoda));
 	histintenzita(Intenzita);
 	CelkoveSkody += Skoda;
@@ -393,5 +394,6 @@ int	main()
 	histintenzita.Output();	
 	std::cout << "Naklady na stanice za dobu simulace: " << (double)(stanice.size()*8753600*SIMULATE_YEARS) << " korun.\n";
 	std::cout << "Celkove skody: " << CelkoveSkody << " korun." << std::endl;
+	std::cout << "Naklady + skody: " << (CelkoveSkody + ((double)(stanice.size()*8753600*SIMULATE_YEARS)) ) << " korun." << std::endl;
 	DeleteStanice();
 }
