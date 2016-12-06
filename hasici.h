@@ -14,6 +14,8 @@
 #define X_MAX 90000
 #define Y_MAX 45000
 #define SIMULATE_YEARS 10
+#define POSADKA_VYDAJE 6753600
+#define BUDOVA_VYDAJE 2000000
 
 typedef struct Point {
 	int X;
@@ -33,9 +35,10 @@ public:
 
 class Stanice : public Facility {
 public:
-	Stanice(int x, int y, const char* name);	
+	Stanice(int x, int y, const char* name, bool budova);	
 	Point Poloha;
 	Point Auto;
+	bool Budova;
 	double AutoStartTime;
 	double AutoArrivalTime;
 	int Vzdalenost;	
@@ -45,8 +48,6 @@ class Pozar : public Process {
 public:
 	double Intenzita;
 	double StartTime;
-	double ExtinguishTime;
-	double EndTime;
 	int Skoda;
 	std::vector<Stanice*> Auta;
 	Point Poloha;
